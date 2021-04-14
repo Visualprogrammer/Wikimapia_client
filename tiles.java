@@ -29,17 +29,33 @@ public class tiles {
     public int y;
     public String quadkey = "";
     public ArrayList<mapobject> obj = new ArrayList<mapobject>();
+    public ArrayList<String> obj_arr = new ArrayList<>();
     public void set_xy(int xx, int yy) throws IOException {
         if((x!=xx) || (y!=yy)) {
             x = xx;
             y = yy;
             String q = maths.TileXYToQuadKey(x,y,zoom);
-            if(!(quadkey.equals(q))) {
+            Boolean down = true;
+            for (int i = 0;i<obj_arr.size();i++) {
+                if(q.equals(obj_arr.get(i))){
+                    down = false;
+                }
+            }
+            if(down) {
                 quadkey = q;
                 ArrayList<mapobject> m = api.Itile_get(x,y,zoom);
                 for(int i = 0; i<m.size();i++) {
-                obj.add(m.get(i));
+                    Boolean t = true;
+                    for (int d =0; d<obj.size(); d++) {
+                        if(m.get(i).id == obj.get(d).id) {
+                            t = false;
+                        }
+                    }
+                    if (t) {
+                        obj.add(m.get(i));
+                    }
                 }
+                obj_arr.add(q);
             }
         }
     }
@@ -182,6 +198,7 @@ public class tiles {
                 Unused = new ArrayList<>();
                 xNumBe = new ArrayList<>();
                 yNumBe = new ArrayList<>();
+                obj = new ArrayList<>();
             }
         }
     }

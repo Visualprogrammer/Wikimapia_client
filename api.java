@@ -28,8 +28,8 @@ public class api {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Content-Type", "application/json");
-        con.setConnectTimeout(3000);
-        con.setReadTimeout(3000);
+        con.setConnectTimeout(30000);
+        con.setReadTimeout(30000);
         try (final BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
             String inputLine;
             final StringBuilder content = new StringBuilder();
@@ -81,9 +81,9 @@ public class api {
                 for(int e =7; e<b.length;e++){
                     g=g+b[e] + "|";
                 }
-                String[] c = {b[0],b[2], b[4], g};
+                String[] c = {b[0],b[2], b[4], g, b[1]};
 
-                mapobject q = new mapobject(0, 0,0,Integer.parseInt(b[0]),new ArrayList<Integer>());
+                mapobject q = new mapobject(0, 0,0,Integer.parseInt(b[0]),new ArrayList<Integer>(), Integer.parseInt(c[4]));
                 int z = a[0].split(" /wmClqwdvmfnmcf//////flkmbldl kjdnlvvmlnkjlsdnc ")[0].length();
                 q.decode_Polygon(c[3],z);
                 obj.add(q);

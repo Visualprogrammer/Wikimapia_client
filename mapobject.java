@@ -8,13 +8,15 @@ public class mapobject {
     double y;
     int zoom;
     int id;
+    int polygon_size;
     ArrayList<Integer> category = new ArrayList<Integer>();
- public mapobject(int z, double xz, double yz, int i, ArrayList<Integer> cat) {
+ public mapobject(int z, double xz, double yz, int i, ArrayList<Integer> cat, int polygon_s) {
         zoom = z;
         x = xz;
         y = yz;
         id = i;
         category = cat;
+        polygon_size = polygon_s;
  }
  public void add_xy(double x, double y) {
      xx.add((int)x);

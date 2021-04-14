@@ -331,7 +331,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         for (int x1 = (zx - 6); x1 < (zx + 6); x1++) {
             for (int y1 = (zy - 6); y1 < (zy + 6); y1++) {
                 try {
-
+                    tiles[zoom - 3].set_xy(x1, y1);
                     //    g.fillRect(-x + x1*256 - shiftX, -y + y1*256 - shiftY, 256,256);
                     g.drawImage(tiles[zoom - 3].getImage(x1, y1), -x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, null);
 
