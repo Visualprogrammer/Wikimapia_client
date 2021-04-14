@@ -42,6 +42,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     int usershiftYRight = 10; // = 10 сдвиг по нажатию кнопки
     int usershiftXUp = -10; // = - 10 сдвиг по нажатию кнопки
     int usershiftYLeft = -10; // = - 10 сдвиг по нажатию кнопки
+    mapobject choosed = new mapobject(0,0,0,0,null,0);
     // Boolean[] tileImageStatus;// двумерный массив статуса загрузки [max x][max y]
     //Integer[] xTilesNum; // номер по x квадрата
     // Integer[] yTilesNum; // номер  по y квадрата
@@ -116,6 +117,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         }
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(this);
+        this.addMouseMotionListener(this);
         Thread childTread = new Thread(this);
         childTread.start();
     }
@@ -349,6 +351,14 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             g.setColor(Color.BLACK);
             g.drawPolygon(qwe);
         }
+        Polygon qwe = new Polygon();
+        for(int i=0;i<choosed.xx.size(); i++) {
+            qwe.addPoint(-x + choosed.xx.get(i) * 2 * 2 - shiftX + w / 2, -y + choosed.yy.get(i) * 2 * 2 - shiftY + h / 2);
+        }
+        g.setColor(new Color(196, 79, 79,200));
+        if (qwe.npoints>2) {
+            g.fillPolygon(qwe);
+        }
         gx.drawImage(buff, 0, 0, null);
         // for (int i1 = 0; i1 < lengtharrayoftile; i1++) {
         //   // g.fillRect(p*256 - shiftX, i*256 - shiftY, 256,256);
@@ -370,7 +380,26 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        ArrayList<mapobject> poly = new ArrayList<>();
+        ArrayList<mapobject> s = tiles[zoom-3].obj;
+        for(int i = 0; i<s.size(); i++) {
+            Polygon qwe = new Polygon();
+            for (int a = 0; a < s.get(i).xx.size(); a++) {
+                qwe.addPoint(-x + s.get(i).xx.get(a) * 2 * 2 - shiftX + w / 2, -y + s.get(i).yy.get(a) * 2 * 2 - shiftY + h / 2);
+            }
+            if(qwe.contains(e.getX(), e.getY())) {
+                poly.add(s.get(i));
+            }
 
+        }
+        int size = poly.get(0).polygon_size;
+        choosed = poly.get(0);
+        for(int i = 1; i<poly.size(); i++) {
+            int k = poly.get(i).polygon_size;
+            if(k<size) {
+                choosed = poly.get(i);
+            }
+        }
     }
     // public Boolean getNeedDownload(int x, int y) {
     //      Boolean c = true;
