@@ -25,6 +25,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     int lengtharrayoftile = 0;
     int leftTileX;
     int leftTileY;
+    int top = 0;
     // int leftx; возможно не нужно
     // int lefty;
     int zoom; // приближение
@@ -87,7 +88,8 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         //}
     }
 
-    public map(double latA, double lonA, int z, int hei, int wei, String serv) throws InterruptedException, IOException { //
+    public map(double latA, double lonA, int z, int hei, int wei, String serv, int t) throws InterruptedException, IOException { //
+        top = t;
         server = serv;
         zoom = z;
         lat = latA;
@@ -387,7 +389,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             for (int a = 0; a < s.get(i).xx.size(); a++) {
                 qwe.addPoint(-x + s.get(i).xx.get(a) * 2 * 2 - shiftX + w / 2, -y + s.get(i).yy.get(a) * 2 * 2 - shiftY + h / 2);
             }
-            if(qwe.contains(e.getX(), e.getY())) {
+            if(qwe.contains(e.getX(), (e.getY() + 25))) {
                 poly.add(s.get(i));
             }
 
