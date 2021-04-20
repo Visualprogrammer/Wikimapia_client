@@ -48,12 +48,12 @@ public class tiles {
                     @Override
                     public void run() {
                         try {
+                            ArrayList<mapobject> m = null;
                             synchronized (syncObj) {
-                            quadkey = q;
-                        ArrayList<mapobject> m = null;
+                                quadkey = q;
 
-                            m = api.Itile_get(x,y,zoom);
-
+                                m = api.Itile_get(x, y, zoom);
+                            }
                         for(int i = 0; i<m.size();i++) {
                     Boolean t = true;
                     for (int d =0; d<obj.size(); d++) {
@@ -66,7 +66,7 @@ public class tiles {
                     }
                 }
                 obj_arr.add(q);
-            }}  catch (IOException e) {
+            }  catch (IOException e) {
                     e.printStackTrace();
                 }
         }});
@@ -211,13 +211,13 @@ public class tiles {
                 Unused = new ArrayList<>();
                 xNumBe = new ArrayList<>();
                 yNumBe = new ArrayList<>();
-                obj = new ArrayList<>();
-                obj_arr = new ArrayList<>();
+              //  obj = new ArrayList<>();
+             //   obj_arr = new ArrayList<>();
             }
         }
     }
     public void clear_obj() {
-        obj_arr = new ArrayList<>();
+    //    obj_arr = new ArrayList<>();
     }
     public void new_tiles_update(int x, int y, int zoom) throws IOException {
         api.Itile_get(x, y, zoom);
