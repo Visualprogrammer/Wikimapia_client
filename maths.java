@@ -31,7 +31,7 @@ public class maths {
             n += ((t & s) > 0 ? 1 : 0) + ((e & s) > 0 ? 2 : 0);
             i--;
         }
-        System.out.println(QuadKeyToTileXY(n.toString()));
+      //  System.out.println(QuadKeyToTileXY(n.toString()));
         return n;
     }
     public static String Url_get_tile_obj(String tileQuad){
@@ -110,10 +110,10 @@ public class maths {
             } while (p >= 32);
             o += ((c & 1) != 0) ? ~(c >> 1) : c >> 1;
             s = o > 90 * 1e6 || o < -(90 * 1e6) ? 1e7 : 1e6;
-            System.out.println((o / s) + " " +(n / s));
+         //   System.out.println((o / s) + " " +(n / s));
             mapobj.add_xy(LatLongToPixelX(o/s, n/s, zoom), LatLongToPixelY(o/s,n/s, zoom));
         }
-        System.out.println("g");
+     //   System.out.println("g");
         return mapobj;
     }
     private static double Clip(double n, double minValue, double maxValue)

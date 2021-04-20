@@ -50,10 +50,10 @@ public class mapobject {
              } while (p >= 32);
              o += ((c & 1) != 0) ? ~(c >> 1) : c >> 1;
              s = o > 90 * 1e6 || o < -(90 * 1e6) ? 1e7 : 1e6;
-             System.out.println((o / s) + " " +(n / s));
+            // System.out.println((o / s) + " " +(n / s));
              this.add_xy(maths.LatLongToPixelX(o/s, n/s, zoom), maths.LatLongToPixelY(o/s,n/s, zoom));
          }
-         System.out.println("g");
+       //  System.out.println("g");
      } catch (Exception ex) {
          System.out.println(ex.getMessage());
      }

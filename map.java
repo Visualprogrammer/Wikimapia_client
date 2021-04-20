@@ -1,9 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import static java.lang.Math.PI;
 import static java.lang.Math.random;
 
-public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMotionListener {
+public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMotionListener, MouseWheelListener {
     Boolean needDownload = true;
     int lengtharrayoftile = 0;
     int leftTileX;
@@ -402,6 +400,12 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                 choosed = poly.get(i);
             }
         }
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+   //     if(e.getScrollType()
+
     }
     // public Boolean getNeedDownload(int x, int y) {
     //      Boolean c = true;

@@ -63,7 +63,7 @@ public class api {
 
     public static ArrayList<mapobject> Itile_get(int tile_x, int tile_y, int zoom) throws IOException {
         ArrayList<mapobject> n = new ArrayList<mapobject>();
-        System.out.println(maths.Url_get_tile_obj(maths.TileXYToQuadKey(tile_x, tile_y, zoom)));
+      //  System.out.println(maths.Url_get_tile_obj(maths.TileXYToQuadKey(tile_x, tile_y, zoom)));
        String a = Do_request(maths.Url_get_tile_obj(maths.TileXYToQuadKey(tile_x, tile_y, zoom)));
         if (a.length() > 10) {
             String[] k = a.split(" lijlkbglfdjgldflgltfhgldrjgldrlhnmtdgnlrdlyjhltfkjogitpdljlitrptkjdyljoitrdkjoidptpklrdjptdkgrdojtpdkgpordjtodjopdjoitrpjgpodrogdjrpoijoidrjgldj9pugoirdpjgoijlrdjogirjoi ");
