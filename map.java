@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import static java.lang.Math.PI;
 import static java.lang.Math.random;
 
-public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMotionListener, MouseWheelListener {
+public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMotionListener, MouseWheelListener, MouseListener {
     Boolean needDownload = true;
     int limit = 6;
     int lengtharrayoftile = 0;
@@ -120,6 +120,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         manager.addKeyEventDispatcher(this);
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
+        this.addMouseListener(this);
         Thread childTread = new Thread(this);
         childTread.start();
     }
@@ -442,6 +443,31 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
            shiftX /= 2;
            shiftY /= 2;
        }
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
 
     }
     // public Boolean getNeedDownload(int x, int y) {
