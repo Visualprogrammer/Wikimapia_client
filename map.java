@@ -20,6 +20,7 @@ import static java.lang.Math.random;
 
 public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMotionListener, MouseWheelListener {
     Boolean needDownload = true;
+    int limit = 6;
     int lengtharrayoftile = 0;
     int leftTileX;
     int leftTileY;
@@ -118,6 +119,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(this);
         this.addMouseMotionListener(this);
+        this.addMouseWheelListener(this);
         Thread childTread = new Thread(this);
         childTread.start();
     }
@@ -234,7 +236,8 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             //   tileImageStatus = new Boolean[maxTileByY * maxTileByX + 10000];
             //  xTilesNum = new Integer[maxTileByX * maxTileByY + 10000];
             //  yTilesNum = new Integer[maxTileByY * maxTileByX + 10000];
-            tiles[zoom - 3].ClearMemory(4);
+            tiles[zoom - 3].ClearMemory(limit);
+            tiles[zoom-3].clear_obj();
             zoom++;
             x = x * 2;
             y = y * 2;
@@ -248,7 +251,8 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             //  tileImageStatus = new Boolean[maxTileByY * maxTileByX + 10000];
             // xTilesNum = new Integer[maxTileByX * maxTileByY + 10000];
             //  yTilesNum = new Integer[maxTileByY * maxTileByX + 10000];
-            tiles[zoom - 3].ClearMemory(4);
+            tiles[zoom-3].clear_obj();
+            tiles[zoom - 3].ClearMemory(limit);
             zoom--;
             x = x / 2;
             y = y / 2;
@@ -283,9 +287,9 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         }
         for (int r = 0; r < tiles.length; r++) {
             if (!(r == zoom - 3)) {
-                tiles[r].ClearMemory(0);
-            } else {
                 tiles[r].ClearMemory(1);
+            } else {
+                tiles[r].ClearMemory(limit);
             }
         }
         viewDiagn((String.valueOf(x / 256 + " " + y / 256)));
@@ -392,6 +396,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             }
 
         }
+        if(poly.size() > 0) {
         int size = poly.get(0).polygon_size;
         choosed = poly.get(0);
         for(int i = 1; i<poly.size(); i++) {
@@ -401,10 +406,42 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             }
         }
     }
+    }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-   //     if(e.getScrollType()
+       int a = e.getWheelRotation();
+       a = -a;
+        if (e.isControlDown())
+        {
+            if (e.getWheelRotation() < 0)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+       if(a>0){
+           System.out.println("mouse wheel Up");
+           tiles[zoom-3].clear_obj();
+           tiles[zoom - 3].ClearMemory(limit);
+           zoom++;
+           x = x * 2;
+           y = y * 2;
+           shiftX *= 2;
+           shiftY *= 2;
+       } else if (a<0){
+           System.out.println("mouse wheel Down");
+           tiles[zoom-3].clear_obj();
+           tiles[zoom - 3].ClearMemory(limit);
+           zoom--;
+           x = x / 2;
+           y = y / 2;
+           shiftX /= 2;
+           shiftY /= 2;
+       }
 
     }
     // public Boolean getNeedDownload(int x, int y) {

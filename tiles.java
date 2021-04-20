@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 public class tiles {
     private Object sync1 = new Object();
+    private Object syncObj = new Object();
     ArrayList<Integer> xNum = new ArrayList<>();
     ArrayList<Integer> yNum = new ArrayList<>();
     ArrayList<Boolean> downloadOrNo = new ArrayList<>();
@@ -42,9 +43,18 @@ public class tiles {
                 }
             }
             if(down) {
-                quadkey = q;
-                ArrayList<mapobject> m = api.Itile_get(x,y,zoom);
-                for(int i = 0; i<m.size();i++) {
+                obj_arr.add(q);
+                Thread downobj = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            synchronized (syncObj) {
+                            quadkey = q;
+                        ArrayList<mapobject> m = null;
+
+                            m = api.Itile_get(x,y,zoom);
+
+                        for(int i = 0; i<m.size();i++) {
                     Boolean t = true;
                     for (int d =0; d<obj.size(); d++) {
                         if(m.get(i).id == obj.get(d).id) {
@@ -56,9 +66,12 @@ public class tiles {
                     }
                 }
                 obj_arr.add(q);
-            }
-        }
-    }
+            }}  catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }});
+            downobj.start();}
+    }}
     public tiles(int zoomExt) {
         zoom = zoomExt;
         // xNum = new Integer[max];
@@ -199,8 +212,12 @@ public class tiles {
                 xNumBe = new ArrayList<>();
                 yNumBe = new ArrayList<>();
                 obj = new ArrayList<>();
+                obj_arr = new ArrayList<>();
             }
         }
+    }
+    public void clear_obj() {
+        obj_arr = new ArrayList<>();
     }
     public void new_tiles_update(int x, int y, int zoom) throws IOException {
         api.Itile_get(x, y, zoom);
