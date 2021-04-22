@@ -360,7 +360,8 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             if (qwe.npoints > 2) {
                 g.fillPolygon(qwe);
             }
-        } else {
+            gx.drawImage(buff, 0, 0, null);
+        } else {//if(!opened.isDraw) {
 
             g.setFont(Title);
             g.drawString(opened.title, 10, 70);
@@ -370,9 +371,13 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                 ph_i++;
             }
             g.setFont(Desc);
-            g.drawString(opened.desc,10,190);
+            for(int o = 0; o<opened.desc_spl.size(); o++) {
+                g.drawString(opened.desc_spl.get(o), 10, 190 + 20*o);
+            }
+            opened.isDraw = true;
+            gx.drawImage(buff, 0, 0, null);
         }
-        gx.drawImage(buff, 0, 0, null);
+
         // for (int i1 = 0; i1 < lengtharrayoftile; i1++) {
         //   // g.fillRect(p*256 - shiftX, i*256 - shiftY, 256,256);
         // try {
@@ -449,7 +454,9 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     public void mouseClicked(MouseEvent e) {
         if(!opened.isOpened) {
             try {
+                opened = null;
                 opened = choosed;
+                opened.isDraw=false;
                 int id = opened.id;
                 String[] ans = API.getById(id);
                 opened.title = ans[0];
@@ -459,6 +466,23 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                 opened.cat_name = ans[4].split(split_ph);
                 for(String v:opened.photos_big_url) {
                     opened.img.add(ImageIO.read(new URL(v.replaceAll("big", "75")).openStream()));
+                }
+                int length = opened.desc.length();
+                int len = 0;
+                if(length>190) {
+                    String[] b = opened.desc.split(" ");
+                    String returned = "";
+                    for(String q:b) {
+                        if((returned+" " + q).length()<190) {
+                            returned += " " + q;
+                        } else {
+                            opened.desc_spl.add(returned);
+                            returned = q;
+                        }
+                    }
+                    opened.desc_spl.add(returned);
+                } else {
+                    opened.desc_spl.add(opened.desc);
                 }
                 opened.isOpened = true;
             } catch (Exception ex) {

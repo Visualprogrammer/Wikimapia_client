@@ -15,7 +15,9 @@ public class mapobject {
     String[] ph_time;
     String[] cat_name;
     String desc;
+    ArrayList<String> desc_spl = new ArrayList<>();
     Boolean isOpened;
+    Boolean isDraw;
     ArrayList<BufferedImage> img= new ArrayList<>();
     ArrayList<Integer> category = new ArrayList<Integer>();
  public mapobject(int z, double xz, double yz, int i, ArrayList<Integer> cat, int polygon_s) {
