@@ -20,6 +20,11 @@ import static java.lang.Math.random;
 
 public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMotionListener, MouseWheelListener, MouseListener {
     Boolean needDownload = true;
+    Font Title = new Font("title", Font.ITALIC, 25);
+    Font Desc = new Font("desc", Font.ITALIC, 15);
+    mapobject opened=new mapobject(0,0,0,0,null,0);
+    String split_ph = " jkdfndgujihsuttvawjyajgtuyhfuyhjyffdjwauygeyiwgishjsjkshieihgyesiuheuiegugiuig ";
+    api API = new api();
     int limit = 6;
     int lengtharrayoftile = 0;
     int leftTileX;
@@ -48,7 +53,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     // Integer[] yTilesNum; // номер  по y квадрата
     // BufferedImage[] tileImage; // одномерный массив изображений [max x][max y]
     String server;
-    tiles[] tiles = new tiles[22 - 2]; // от 3 до 22
+    tiles[] tiles = new tiles[23 - 2]; // от 3 до 22
 
     @Override
     public void run() { //второй поток (загрузка изображений)
@@ -88,6 +93,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     }
 
     public map(double latA, double lonA, int z, int hei, int wei, String serv, int t) throws InterruptedException, IOException { //
+        opened.isOpened = false;
         top = t;
         server = serv;
         zoom = z;
@@ -113,7 +119,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         //         tileImageStatus[i][p] = false;
         //     }
         //  }
-        for (int i = 0; i < 22 - 2; i++) {
+        for (int i = 0; i < 23 - 2; i++) {
             tiles[i] = new tiles(i + 3);
         }
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
@@ -237,13 +243,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             //   tileImageStatus = new Boolean[maxTileByY * maxTileByX + 10000];
             //  xTilesNum = new Integer[maxTileByX * maxTileByY + 10000];
             //  yTilesNum = new Integer[maxTileByY * maxTileByX + 10000];
-            tiles[zoom - 3].ClearMemory(limit);
-            tiles[zoom-3].clear_obj();
-            zoom++;
-            x = x * 2;
-            y = y * 2;
-            shiftX *= 2;
-            shiftY *= 2;
+           zoomUp();
 
         } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
             key = "code#" + e.getKeyCode();
@@ -252,13 +252,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             //  tileImageStatus = new Boolean[maxTileByY * maxTileByX + 10000];
             // xTilesNum = new Integer[maxTileByX * maxTileByY + 10000];
             //  yTilesNum = new Integer[maxTileByY * maxTileByX + 10000];
-            tiles[zoom-3].clear_obj();
-            tiles[zoom - 3].ClearMemory(limit);
-            zoom--;
-            x = x / 2;
-            y = y / 2;
-            shiftX /= 2;
-            shiftY /= 2;
+            zoomDown();
         }
 
         if (shiftX > 256) {
@@ -329,40 +323,54 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     //  }
 
     public void drawMap(Graphics gx) throws IOException {
+        try {
         BufferedImage buff = new BufferedImage(1920, 1080, 1);
         Graphics g = buff.getGraphics();
         // viewDiagn("Отрисовка");
-        tiles[zoom - 3].set_xy(x / 256, y / 256);
-        int zx = x / 256;
-        int zy = y / 256;
-        for (int x1 = (zx - 6); x1 < (zx + 6); x1++) {
-            for (int y1 = (zy - 6); y1 < (zy + 6); y1++) {
-                try {
-                    tiles[zoom - 3].set_xy(x1, y1);
-                    //    g.fillRect(-x + x1*256 - shiftX, -y + y1*256 - shiftY, 256,256);
-                    g.drawImage(tiles[zoom - 3].getImage(x1, y1), -x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, null);
-
-                    //      g.drawString(x1 + " "+ y1,-x + x1*256 - shiftX + 20, -y + y1*256 - shiftY +120);
-                } catch (Exception e) {
+        if(!opened.isOpened) {
+            tiles[zoom - 3].set_xy(x / 256, y / 256);
+            int zx = x / 256;
+            int zy = y / 256;
+            for (int x1 = (zx - 6); x1 < (zx + 6); x1++) {
+                for (int y1 = (zy - 6); y1 < (zy + 6); y1++) {
+                    try {
+                        tiles[zoom - 3].set_xy(x1, y1);
+                        //    g.fillRect(-x + x1*256 - shiftX, -y + y1*256 - shiftY, 256,256);
+                        g.drawImage(tiles[zoom - 3].getImage(x1, y1), -x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, null);
+                      //  g.drawRect(-x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, 256, 256);
+                        //      g.drawString(x1 + " "+ y1,-x + x1*256 - shiftX + 20, -y + y1*256 - shiftY +120);
+                    } catch (Exception e) {
+                    }
                 }
             }
-        }
-        ArrayList<mapobject> obj = tiles[zoom - 3].obj;
-        for (int i = 0; i < obj.size(); i++) {
-            Polygon qwe = new Polygon();
-            for (int a = 0; a < obj.get(i).xx.size(); a++) {
-                qwe.addPoint(-x + obj.get(i).xx.get(a) * 2 * 2 - shiftX + w / 2, -y + obj.get(i).yy.get(a) * 2 * 2 - shiftY + h / 2);
+            ArrayList<mapobject> obj = tiles[zoom - 3].obj;
+            for (int i = 0; i < obj.size(); i++) {
+                Polygon qwe = new Polygon();
+                for (int a = 0; a < obj.get(i).xx.size(); a++) {
+                    qwe.addPoint(-x + obj.get(i).xx.get(a) * 2 * 2 - shiftX + w / 2, -y + obj.get(i).yy.get(a) * 2 * 2 - shiftY + h / 2);
+                }
+                g.setColor(Color.BLACK);
+                g.drawPolygon(qwe);
             }
-            g.setColor(Color.BLACK);
-            g.drawPolygon(qwe);
-        }
-        Polygon qwe = new Polygon();
-        for(int i=0;i<choosed.xx.size(); i++) {
-            qwe.addPoint(-x + choosed.xx.get(i) * 2 * 2 - shiftX + w / 2, -y + choosed.yy.get(i) * 2 * 2 - shiftY + h / 2);
-        }
-        g.setColor(new Color(196, 79, 79,200));
-        if (qwe.npoints>2) {
-            g.fillPolygon(qwe);
+            Polygon qwe = new Polygon();
+            for (int i = 0; i < choosed.xx.size(); i++) {
+                qwe.addPoint(-x + choosed.xx.get(i) * 2 * 2 - shiftX + w / 2, -y + choosed.yy.get(i) * 2 * 2 - shiftY + h / 2);
+            }
+            g.setColor(new Color(196, 79, 79, 200));
+            if (qwe.npoints > 2) {
+                g.fillPolygon(qwe);
+            }
+        } else {
+
+            g.setFont(Title);
+            g.drawString(opened.title, 10, 70);
+            int ph_i=0;
+            for (String ph_url:opened.ph_time) {
+                g.drawImage(opened.img.get(ph_i), 10 + ph_i * 85, 100, 75, 75, null);
+                ph_i++;
+            }
+            g.setFont(Desc);
+            g.drawString(opened.desc,10,190);
         }
         gx.drawImage(buff, 0, 0, null);
         // for (int i1 = 0; i1 < lengtharrayoftile; i1++) {
@@ -372,11 +380,9 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         //   if ((Math.abs(xTilesNum[i1] - (x/256)) < 20) && ((Math.abs(yTilesNum[i1] - (y/256))) < 20)) {
         //      g.drawImage(tileImage[i1], xTilesNum[i1]*256 - x - shiftX + 512, yTilesNum[i1] * 256 - y - shiftY+512, null);
         //   }
-        //} catch (Exception ee) {
-
-        // }
-        // }
-    }
+        } catch (Exception ee) {
+        }
+         }
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -387,10 +393,15 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     public void mouseMoved(MouseEvent e) {
         ArrayList<mapobject> poly = new ArrayList<>();
         ArrayList<mapobject> s = tiles[zoom-3].obj;
+        int gtax, gtay, vrx,vry;
         for(int i = 0; i<s.size(); i++) {
             Polygon qwe = new Polygon();
             for (int a = 0; a < s.get(i).xx.size(); a++) {
-                qwe.addPoint(-x + s.get(i).xx.get(a) * 2 * 2 - shiftX + w / 2, -y + s.get(i).yy.get(a) * 2 * 2 - shiftY + h / 2);
+                gtax = s.get(i).xx.get(a);
+                gtay = s.get(i).yy.get(a);
+                vrx = -x + gtax * 2 * 2 - shiftX + w / 2;
+                vry =-y + gtay * 2 * 2 - shiftY + h / 2;
+                qwe.addPoint(vrx, vry);
             }
             if(qwe.contains(e.getX(), (e.getY() + 25))) {
                 poly.add(s.get(i));
@@ -426,29 +437,36 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         }
        if(a>0){
            System.out.println("mouse wheel Up");
-           tiles[zoom-3].clear_obj();
-           tiles[zoom - 3].ClearMemory(limit);
-           zoom++;
-           x = x * 2;
-           y = y * 2;
-           shiftX *= 2;
-           shiftY *= 2;
+         zoomUp();
        } else if (a<0){
            System.out.println("mouse wheel Down");
-           tiles[zoom-3].clear_obj();
-           tiles[zoom - 3].ClearMemory(limit);
-           zoom--;
-           x = x / 2;
-           y = y / 2;
-           shiftX /= 2;
-           shiftY /= 2;
+          zoomDown();
        }
 
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        
+        if(!opened.isOpened) {
+            try {
+                opened = choosed;
+                int id = opened.id;
+                String[] ans = API.getById(id);
+                opened.title = ans[0];
+                opened.desc = ans[1];
+                opened.photos_big_url = ans[2].split(split_ph);
+                opened.ph_time = ans[3].split(split_ph);
+                opened.cat_name = ans[4].split(split_ph);
+                for(String v:opened.photos_big_url) {
+                    opened.img.add(ImageIO.read(new URL(v.replaceAll("big", "75")).openStream()));
+                }
+                opened.isOpened = true;
+            } catch (Exception ex) {
+
+            }
+        } else {
+            opened.isOpened = false;
+        }
     }
 
     @Override
@@ -469,6 +487,28 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+    public void zoomUp() {
+        if (zoom < 18) {
+            tiles[zoom - 3].clear_obj();
+            tiles[zoom - 3].ClearMemory(limit);
+            zoom++;
+            x = x * 2;
+            y = y * 2;
+            shiftX *= 2;
+            shiftY *= 2;
+        }
+    }
+    public void zoomDown() {
+        if(zoom > 2) {
+            tiles[zoom - 3].clear_obj();
+            tiles[zoom - 3].ClearMemory(limit);
+            zoom--;
+            x = x / 2;
+            y = y / 2;
+            shiftX /= 2;
+            shiftY /= 2;
+        }
     }
     // public Boolean getNeedDownload(int x, int y) {
     //      Boolean c = true;

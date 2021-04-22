@@ -49,6 +49,13 @@ public class api {
         }
     }
 
+     public String[] getById(int id) throws IOException {
+         String[] ans;
+         String nav_url = "http://f0321390.xsph.ru/getbyid.php?id="+ id +"&key=" + key;
+        String a = Do_request(nav_url);
+        ans = a.split(" kjdshflkvjfdglkhbjkjdxbiktfofkljirotlvcmgnokoijllmcewreshgsetyfdykjnfcoijcxijfcop ");
+        return ans;
+      }
     public String getnearest(double x, double y, double z, String lng, int count, Boolean mercator) throws IOException {
         String opt;
         if (mercator) {
@@ -63,33 +70,34 @@ public class api {
 
     public static ArrayList<mapobject> Itile_get(int tile_x, int tile_y, int zoom) throws IOException {
         ArrayList<mapobject> n = new ArrayList<mapobject>();
-      //  System.out.println(maths.Url_get_tile_obj(maths.TileXYToQuadKey(tile_x, tile_y, zoom)));
-       String a = Do_request(maths.Url_get_tile_obj(maths.TileXYToQuadKey(tile_x, tile_y, zoom)));
+        //  System.out.println(maths.Url_get_tile_obj(maths.TileXYToQuadKey(tile_x, tile_y, zoom)));
+        String a = Do_request(maths.Url_get_tile_obj(maths.TileXYToQuadKey(tile_x, tile_y, zoom)));
         if (a.length() > 10) {
             String[] k = a.split(" lijlkbglfdjgldflgltfhgldrjgldrlhnmtdgnlrdlyjhltfkjogitpdljlitrptkjdyljoitrdkjoidptpklrdjptdkgrdojtpdkgpordjtodjopdjoitrpjgpodrogdjrpoijoidrjgldj9pugoirdpjgoijlrdjogirjoi ");
-          // System.out.println(k[3]);
+            // System.out.println(k[3]);
             n = getobjarray(k);
-       }
+        }
 
         return n;
-        }
-        public static ArrayList<mapobject> getobjarray(String[] a) {
-        ArrayList<mapobject> obj = new ArrayList<>();
-            for(int i =2; i<a.length; i++ ) {
-                String[] b = a[i].split(" /wmClqwdvmfnmcf//////flkmbldl kjdnlvvmlnkjlsdnc ");
-                String g = "";
-                for(int e =7; e<b.length;e++){
-                    g=g+b[e] + "|";
-                }
-                String[] c = {b[0],b[2], b[4], g, b[1]};
-
-                mapobject q = new mapobject(0, 0,0,Integer.parseInt(b[0]),new ArrayList<Integer>(), Integer.parseInt(c[4]));
-                int z = a[0].split(" /wmClqwdvmfnmcf//////flkmbldl kjdnlvvmlnkjlsdnc ")[0].length();
-                q.decode_Polygon(c[3],z);
-                obj.add(q);
-            }
-            return obj;
-        }
-
     }
+
+    public static ArrayList<mapobject> getobjarray(String[] a) {
+        ArrayList<mapobject> obj = new ArrayList<>();
+        for (int i = 2; i < a.length; i++) {
+            String[] b = a[i].split(" /wmClqwdvmfnmcf//////flkmbldl kjdnlvvmlnkjlsdnc ");
+            String g = "";
+            for (int e = 7; e < b.length; e++) {
+                g = g + b[e] + "|";
+            }
+            String[] c = {b[0], b[2], b[4], g, b[1]};
+
+            mapobject q = new mapobject(0, 0, 0, Integer.parseInt(b[0]), new ArrayList<Integer>(), Integer.parseInt(c[4]));
+            int z = a[0].split(" /wmClqwdvmfnmcf//////flkmbldl kjdnlvvmlnkjlsdnc ")[0].length();
+            q.decode_Polygon(c[3], z);
+            obj.add(q);
+        }
+        return obj;
+    }
+
+}
 //}

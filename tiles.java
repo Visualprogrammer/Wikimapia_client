@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 public class tiles {
+    private Object syncObj1 = new Object();
     private Object sync1 = new Object();
     private Object syncObj = new Object();
     ArrayList<Integer> xNum = new ArrayList<>();
@@ -49,11 +50,15 @@ public class tiles {
                     public void run() {
                         try {
                             ArrayList<mapobject> m = null;
+                            int xz;
+                            int yz;
                             synchronized (syncObj) {
+                                xz = xx;
+                                yz = yy;
                                 quadkey = q;
-
-                                m = api.Itile_get(x, y, zoom);
                             }
+                                m = api.Itile_get(xz, yz, zoom);
+synchronized (syncObj1) {
                         for(int i = 0; i<m.size();i++) {
                     Boolean t = true;
                     for (int d =0; d<obj.size(); d++) {
@@ -65,7 +70,7 @@ public class tiles {
                         obj.add(m.get(i));
                     }
                 }
-                obj_arr.add(q);
+                obj_arr.add(q); }
             }  catch (IOException e) {
                     e.printStackTrace();
                 }

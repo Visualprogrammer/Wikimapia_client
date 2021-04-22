@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class mapobject {
@@ -9,6 +10,13 @@ public class mapobject {
     int zoom;
     int id;
     int polygon_size;
+    String title;
+    String[] photos_big_url;
+    String[] ph_time;
+    String[] cat_name;
+    String desc;
+    Boolean isOpened;
+    ArrayList<BufferedImage> img= new ArrayList<>();
     ArrayList<Integer> category = new ArrayList<Integer>();
  public mapobject(int z, double xz, double yz, int i, ArrayList<Integer> cat, int polygon_s) {
         zoom = z;
