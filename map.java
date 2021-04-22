@@ -21,7 +21,7 @@ import static java.lang.Math.random;
 public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMotionListener, MouseWheelListener, MouseListener {
     Boolean needDownload = true;
     Font Title = new Font("title", Font.ITALIC, 25);
-    Font Desc = new Font("desc", Font.ITALIC, 15);
+    Font Desc = new Font("desc", Font.BOLD, 17);
     mapobject opened=new mapobject(0,0,0,0,null,0);
     String split_ph = " jkdfndgujihsuttvawjyajgtuyhfuyhjyffdjwauygeyiwgishjsjkshieihgyesiuheuiegugiuig ";
     api API = new api();
@@ -473,7 +473,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                     String[] b = opened.desc.split(" ");
                     String returned = "";
                     for(String q:b) {
-                        if((returned+" " + q).length()<190) {
+                        if((returned+" " + q).length()<160) {
                             returned += " " + q;
                         } else {
                             opened.desc_spl.add(returned);
