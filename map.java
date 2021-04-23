@@ -25,6 +25,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     mapobject opened=new mapobject(0,0,0,0,null,0);
     String split_ph = " jkdfndgujihsuttvawjyajgtuyhfuyhjyffdjwauygeyiwgishjsjkshieihgyesiuheuiegugiuig ";
     api API = new api();
+    boolean seehelp = false;
     int limit = 6;
     BufferedImage test = ImageIO.read(new URL("https://polarnick.com/static/unicorn.png").openStream());
     int lengtharrayoftile = 0;
@@ -36,6 +37,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     int zoom; // приближение
     double lat = 0; // широта
     double lon = 0; // долгота
+    boolean seepolygons = true;
     int maxTileByX = 0; // максимальное количество квадратов по ширине окна
     int maxTileByY = 0; // максимальное количество квадратов по высоте окна
     int h; // высота окна
@@ -200,15 +202,15 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     }
 
     public void viewDiagn(String a) {
-        System.out.println(a);
+        //System.out.println(a);
     }
 
     public void viewDiagn(int a) {
-        System.out.println(a);
+        //System.out.println(a);
     }
 
     public void viewDiagn(double a) {
-        System.out.println(a);
+        //System.out.println(a);
     }
 
     @Override
@@ -227,16 +229,16 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         String key = "unknown";
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             key = "space";
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        } else if ((e.getKeyCode() == KeyEvent.VK_LEFT) || (e.getKeyCode()==KeyEvent.VK_A)) {
             key = "enter";
             shiftX += usershiftYLeft;
-        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+        } else if ((e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode()==KeyEvent.VK_W)) {
             key = "enter";
             shiftY += usershiftXUp;
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        } else if ((e.getKeyCode() == KeyEvent.VK_RIGHT)  || (e.getKeyCode()==KeyEvent.VK_D)){
             key = "enter";
             shiftX += usershiftYRight;
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+        } else if ((e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode()==KeyEvent.VK_S)) {
             key = "enter";
             shiftY += usershiftXDown;
         } else if (e.getKeyCode() == 107) { //приближение плюс
@@ -265,6 +267,12 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             for (int i = 0; i < 23 - 2; i++) {
                 tiles[i] = new tiles(i + 3);
             }
+        } else if (e.getKeyCode()==KeyEvent.VK_V) {
+            seepolygons = true;
+        } else if(e.getKeyCode() == KeyEvent.VK_B) {
+            seepolygons = false;
+        } else if(e.getKeyCode()==KeyEvent.VK_0) {
+            seehelp = true;
         }
 
         if (shiftX > 256) {
@@ -339,71 +347,100 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         BufferedImage buff = new BufferedImage(1920, 1080, 1);
         Graphics g = buff.getGraphics();
         // viewDiagn("Отрисовка");
-        if(!opened.isOpened) {
-            tiles[zoom - 3].set_xy(x / 256, y / 256);
-            int zx = x / 256;
-            int zy = y / 256;
-            for (int x1 = (zx - 6); x1 < (zx + 6); x1++) {
-                for (int y1 = (zy - 6); y1 < (zy + 6); y1++) {
-                    try {
-                        tiles[zoom - 3].set_xy(x1, y1);
-                        //    g.fillRect(-x + x1*256 - shiftX, -y + y1*256 - shiftY, 256,256);
-                        g.drawImage(tiles[zoom - 3].getImage(x1, y1, server), -x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, null);
-                      //  g.drawRect(-x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, 256, 256);
-                        //      g.drawString(x1 + " "+ y1,-x + x1*256 - shiftX + 20, -y + y1*256 - shiftY +120);
-                    } catch (Exception e) {
+            if(!seehelp) {
+                if (!opened.isOpened) {
+                    tiles[zoom - 3].set_xy(x / 256, y / 256);
+                    int zx = x / 256;
+                    int zy = y / 256;
+                    for (int x1 = (zx - 6); x1 < (zx + 6); x1++) {
+                        for (int y1 = (zy - 6); y1 < (zy + 6); y1++) {
+                            try {
+                                tiles[zoom - 3].set_xy(x1, y1);
+                                //    g.fillRect(-x + x1*256 - shiftX, -y + y1*256 - shiftY, 256,256);
+                                g.drawImage(tiles[zoom - 3].getImage(x1, y1, server), -x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, null);
+                                //  g.drawRect(-x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, 256, 256);
+                                //      g.drawString(x1 + " "+ y1,-x + x1*256 - shiftX + 20, -y + y1*256 - shiftY +120);
+                            } catch (Exception e) {
+                            }
+                        }
                     }
-                }
-            }
-            ArrayList<mapobject> obj = tiles[zoom - 3].obj;
-            for (int i = 0; i < obj.size(); i++) {
-                Polygon qwe = new Polygon();
-                for (int a = 0; a < obj.get(i).xx.size(); a++) {
-                    qwe.addPoint(-x + obj.get(i).xx.get(a) * 2 * 2 - shiftX + w / 2, -y + obj.get(i).yy.get(a) * 2 * 2 - shiftY + h / 2);
-                }
-                g.setColor(Color.BLACK);
-                g.drawPolygon(qwe);
-            }
-            Polygon qwe = new Polygon();
-            for (int i = 0; i < choosed.xx.size(); i++) {
-                qwe.addPoint(-x + choosed.xx.get(i) * 2 * 2 - shiftX + w / 2, -y + choosed.yy.get(i) * 2 * 2 - shiftY + h / 2);
-            }
-            g.setColor(new Color(196, 79, 79, 200));
-            if (qwe.npoints > 2) {
-                g.fillPolygon(qwe);
-            }//g.drawImage(test,500,500,null);
-            gx.drawImage(buff, 0, 0, null);
+                    if (seepolygons) {
+                        ArrayList<mapobject> obj = tiles[zoom - 3].obj;
+                        for (int i = 0; i < obj.size(); i++) {
+                            Polygon qwe = new Polygon();
+                            for (int a = 0; a < obj.get(i).xx.size(); a++) {
+                                qwe.addPoint(-x + obj.get(i).xx.get(a) * 2 * 2 - shiftX + w / 2, -y + obj.get(i).yy.get(a) * 2 * 2 - shiftY + h / 2);
+                            }
+                            g.setColor(Color.BLACK);
+                            g.drawPolygon(qwe);
+                        }
+                    }
+                    Polygon qwe = new Polygon();
+                    for (int i = 0; i < choosed.xx.size(); i++) {
+                        qwe.addPoint(-x + choosed.xx.get(i) * 2 * 2 - shiftX + w / 2, -y + choosed.yy.get(i) * 2 * 2 - shiftY + h / 2);
+                    }
+                    g.setColor(new Color(196, 79, 79, 200));
+                    if (qwe.npoints > 2) {
+                        g.fillPolygon(qwe);
+                    }//g.drawImage(test,500,500,null);
+                    if (!seehelp) {
+                        g.setColor(Color.cyan);
+                        g.fillRect(0, 790, 400, 300);
+                        g.setColor(Color.BLACK);
+                        g.setFont(Desc);
+                        g.drawString("Для открытия подсказки нажмите 0", 10, 815);
+                    }
+                    gx.drawImage(buff, 0, 0, null);
 
-        } else {//if(!opened.isDraw) {
+                } else {//if(!opened.isDraw) {
 
-            g.setFont(Title);
-            int count = 70;
-            int otstup = 20;
-            g.drawString(opened.title, otstup, count);
-            count +=30;
-            int ph_i=0;
-            for (int i = 0; i < opened.img.size(); i++) {
-                g.drawImage(opened.img.get(ph_i), otstup + ph_i * 85, count, 75, 75, null);
-                ph_i++;
-            }
-            count += 90;
-            g.setFont(Desc);
-            for(int o = 0; o<opened.desc_spl.size(); o++) {
-                g.drawString(opened.desc_spl.get(o), otstup, count);
-                count+=20;
-            }
-            if(opened.cat_name.length>0) {
-                String cat = opened.cat_name[0];
-                for (int i = 1; i < opened.cat_name.length; i++) {
-                    cat += ", " + opened.cat_name[i];
+                    g.setFont(Title);
+                    int count = 70;
+                    int otstup = 20;
+                    g.drawString(opened.title, otstup, count);
+                    count += 30;
+                    int ph_i = 0;
+                    for (int i = 0; i < opened.img.size(); i++) {
+                        g.drawImage(opened.img.get(ph_i), otstup + ph_i * 85, count, 75, 75, null);
+                        ph_i++;
+                    }
+                    count += 90;
+                    g.setFont(Desc);
+                    for (int o = 0; o < opened.desc_spl.size(); o++) {
+                        g.drawString(opened.desc_spl.get(o), otstup, count);
+                        count += 20;
+                    }
+                    if (opened.cat_name.length > 0) {
+                        String cat = opened.cat_name[0];
+                        for (int i = 1; i < opened.cat_name.length; i++) {
+                            cat += ", " + opened.cat_name[i];
+                        }
+                        g.drawString("Категории объекта: " + cat, otstup, count);
+                    }
+                    opened.isDraw = true;
+                    //      g.drawImage(test,500,500,null);
+                    gx.drawImage(buff, 0, 0, null);
                 }
-                g.drawString("Категории объекта: " + cat, otstup, count);
+            } else {
+                Graphics gr = g;
+                gr.setColor(Color.WHITE);
+                gr.fillRect(0,0,9000,9000);
+                gr.setColor(Color.BLACK);
+                int x= 10;
+                int y = 70;
+                y= help.drstr(gr, x,y,"Назначения клавиш");
+                y= help.drstr(gr, x,y,"V - показать контура объектов");
+                y= help.drstr(gr, x,y,"B - скрыть контура");
+                y= help.drstr(gr, x,y,"W или стрелка вверх - перемещение на север");
+                y= help.drstr(gr, x,y,"S или стрелка вниз - перемещение на юг");
+                y= help.drstr(gr, x,y,"A или стрелка влево - перемещение на запад");
+                y= help.drstr(gr, x,y,"D или стрелка вправо - перемещение на восток");
+                y= help.drstr(gr, x,y,"- или колёсико мыши вниз - отдаление");
+                y= help.drstr(gr, x,y,"+ или колёсико мыши вверх - приближение");
+                y= help.drstr(gr, x,y,"1 - карта OSM");
+                y= help.drstr(gr, x,y,"2 - карта Wikimapia");
+                gx.drawImage(buff,0,0,null);
             }
-            opened.isDraw = true;
-      //      g.drawImage(test,500,500,null);
-            gx.drawImage(buff, 0, 0, null);
-        }
-
         // for (int i1 = 0; i1 < lengtharrayoftile; i1++) {
         //   // g.fillRect(p*256 - shiftX, i*256 - shiftY, 256,256);
         // try {
@@ -478,6 +515,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        seehelp = false;
         if(!opened.isOpened) {
             try {
                 opened = null;
