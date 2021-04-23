@@ -26,6 +26,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     String split_ph = " jkdfndgujihsuttvawjyajgtuyhfuyhjyffdjwauygeyiwgishjsjkshieihgyesiuheuiegugiuig ";
     api API = new api();
     int limit = 6;
+    BufferedImage test = ImageIO.read(new URL("https://polarnick.com/static/unicorn.png").openStream());
     int lengtharrayoftile = 0;
     int leftTileX;
     int leftTileY;
@@ -93,6 +94,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
     }
 
     public map(double latA, double lonA, int z, int hei, int wei, String serv, int t) throws InterruptedException, IOException { //
+        test = ImageIO.read(new URL("https://polarnick.com/static/unicorn.png").openStream());
         opened.isOpened = false;
         top = t;
         server = serv;
@@ -253,6 +255,16 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             // xTilesNum = new Integer[maxTileByX * maxTileByY + 10000];
             //  yTilesNum = new Integer[maxTileByY * maxTileByX + 10000];
             zoomDown();
+        } else if(e.getKeyCode() == KeyEvent.VK_1) {
+            server = "OSM";
+            for (int i = 0; i < 23 - 2; i++) {
+                tiles[i] = new tiles(i + 3);
+            }
+        } else if(e.getKeyCode() == KeyEvent.VK_2) {
+            server = "wikimapia";
+            for (int i = 0; i < 23 - 2; i++) {
+                tiles[i] = new tiles(i + 3);
+            }
         }
 
         if (shiftX > 256) {
@@ -336,7 +348,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                     try {
                         tiles[zoom - 3].set_xy(x1, y1);
                         //    g.fillRect(-x + x1*256 - shiftX, -y + y1*256 - shiftY, 256,256);
-                        g.drawImage(tiles[zoom - 3].getImage(x1, y1), -x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, null);
+                        g.drawImage(tiles[zoom - 3].getImage(x1, y1, server), -x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, null);
                       //  g.drawRect(-x + x1 * 256 - shiftX + w / 2, -y + y1 * 256 - shiftY + h / 2, 256, 256);
                         //      g.drawString(x1 + " "+ y1,-x + x1*256 - shiftX + 20, -y + y1*256 - shiftY +120);
                     } catch (Exception e) {
@@ -359,22 +371,36 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
             g.setColor(new Color(196, 79, 79, 200));
             if (qwe.npoints > 2) {
                 g.fillPolygon(qwe);
-            }
+            }//g.drawImage(test,500,500,null);
             gx.drawImage(buff, 0, 0, null);
+
         } else {//if(!opened.isDraw) {
 
             g.setFont(Title);
-            g.drawString(opened.title, 10, 70);
+            int count = 70;
+            int otstup = 20;
+            g.drawString(opened.title, otstup, count);
+            count +=30;
             int ph_i=0;
-            for (String ph_url:opened.ph_time) {
-                g.drawImage(opened.img.get(ph_i), 10 + ph_i * 85, 100, 75, 75, null);
+            for (int i = 0; i < opened.img.size(); i++) {
+                g.drawImage(opened.img.get(ph_i), otstup + ph_i * 85, count, 75, 75, null);
                 ph_i++;
             }
+            count += 90;
             g.setFont(Desc);
             for(int o = 0; o<opened.desc_spl.size(); o++) {
-                g.drawString(opened.desc_spl.get(o), 10, 190 + 20*o);
+                g.drawString(opened.desc_spl.get(o), otstup, count);
+                count+=20;
+            }
+            if(opened.cat_name.length>0) {
+                String cat = opened.cat_name[0];
+                for (int i = 1; i < opened.cat_name.length; i++) {
+                    cat += ", " + opened.cat_name[i];
+                }
+                g.drawString("Категории объекта: " + cat, otstup, count);
             }
             opened.isDraw = true;
+      //      g.drawImage(test,500,500,null);
             gx.drawImage(buff, 0, 0, null);
         }
 
@@ -464,8 +490,15 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                 opened.photos_big_url = ans[2].split(split_ph);
                 opened.ph_time = ans[3].split(split_ph);
                 opened.cat_name = ans[4].split(split_ph);
+                opened.desc_spl = new ArrayList<>();
                 for(String v:opened.photos_big_url) {
-                    opened.img.add(ImageIO.read(new URL(v.replaceAll("big", "75")).openStream()));
+                    try {
+                        if(v.length()>7) {
+                            opened.img.add(ImageIO.read(new URL(v.replaceAll("big", "75")).openStream()));
+                        }
+                    } catch(Exception ex) {
+
+                    }
                 }
                 int length = opened.desc.length();
                 int len = 0;
@@ -481,12 +514,14 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                         }
                     }
                     opened.desc_spl.add(returned);
+                    returned = "";
                 } else {
                     opened.desc_spl.add(opened.desc);
                 }
+
                 opened.isOpened = true;
             } catch (Exception ex) {
-
+                System.out.println(ex.toString());
             }
         } else {
             opened.isOpened = false;

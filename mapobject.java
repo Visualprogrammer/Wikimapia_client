@@ -1,5 +1,7 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class mapobject {
@@ -16,7 +18,7 @@ public class mapobject {
     String[] cat_name;
     String desc;
     ArrayList<String> desc_spl = new ArrayList<>();
-    Boolean isOpened;
+    Boolean isOpened = false;
     Boolean isDraw;
     ArrayList<BufferedImage> img= new ArrayList<>();
     ArrayList<Integer> category = new ArrayList<Integer>();

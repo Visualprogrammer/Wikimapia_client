@@ -3,8 +3,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -110,10 +112,12 @@ synchronized (syncObj1) {
                     //   xNum[nowIndex] = tilex;
                     //  }
                     String url = null;
-                    //   if(serverOfImage.equals("wikimapia")) {
+                      if(serverOfImage.equals("wikimapia")) {
                     int NUM = (tilex % 4) + ((tiley % 4) * 4);
                     url = "http://i" + NUM + ".wikimapia.org/?x=" + tilex + "&y=" + tiley + "&zoom=" + zoom + "&lng=1&type=map";
-                    //  }
+                      } else {
+                          url = "https://tile.openstreetmap.org/" + zoom + "/" + tilex + "/" + tiley + ".png";
+                      }
                     URL Url = null;
 
                     try {
@@ -123,7 +127,24 @@ synchronized (syncObj1) {
                     }
                     BufferedImage img = null;
                     try {
-                        img = ImageIO.read(Url.openStream());
+                        URLConnection conn = Url.openConnection();
+                        if(serverOfImage.length() < 4) {
+                            conn.addRequestProperty("authority", "tile.openstreetmap.org");
+                            conn.addRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                            conn.addRequestProperty("accept-encoding", "deflate");
+                            conn.addRequestProperty("accept-language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
+                            conn.addRequestProperty("cache-control", "no-cache");
+                            conn.addRequestProperty("dnt", "1");
+                            conn.addRequestProperty("pragma", "no-cache");
+                            conn.addRequestProperty("sec-fetch-dest", "document");
+                            conn.addRequestProperty("sec-fetch-mode", "navigate");
+                            conn.addRequestProperty("sec-fetch-site", "none");
+                            conn.addRequestProperty("sec-fetch-user","?1");
+                            conn.addRequestProperty("upgrade-insecure-requests", "1");
+                            conn.addRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36 OPR/75.0.3969.218);");
+                        }
+                        InputStream in = conn.getInputStream();
+                        img = ImageIO.read(in);
                         //if (!Files.exists(Paths.get("D:\\image\\" + zoom + "\\" + tilex + "\\"))) {
                         //    Files.createDirectories(Paths.get("D:\\image\\" + zoom + "\\" + tilex + "\\"));
                         // }
@@ -155,7 +176,7 @@ synchronized (syncObj1) {
     public int getZoom() {
         return zoom;
     }
-    public BufferedImage getImage(int x, int y) throws IOException {
+    public BufferedImage getImage(int x, int y, String serv) throws IOException {
         BufferedImage a = null;
         try{ for(int i = 0; i < xNum.size(); i++) {
             Unused.set(i, Unused.get(i) + 1);
@@ -166,10 +187,10 @@ synchronized (syncObj1) {
             }
         } }
         catch(Exception e) {
-            this.DownloadFile(x,y, "wikimapia");
+            this.DownloadFile(x,y, serv);
         }
         //   a = new BufferedImage(256, 256, 0);
-        this.DownloadFile(x,y, "wikimapia");
+        this.DownloadFile(x,y, serv);
         //   Graphics g = a.getGraphics();
         //  g.setColor(new java.awt.Color(180, 170, 170));
         //  g.fillRect(0, 0, 256, 256);
