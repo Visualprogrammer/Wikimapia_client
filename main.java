@@ -7,6 +7,7 @@ public class main {
       //  api api = new api();
         f.add(Map);
         f.setVisible(true);
+        f.setTitle("ГИС Атом");
         while(true) {
             // Map.viewDiagn("Рис.");
             Map.drawMap(f.getGraphics());
