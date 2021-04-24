@@ -202,12 +202,12 @@ public class tiles {
                 }
             }
         } catch (Exception e) {
-            if((x<=max_tiles) && (y <= max_tiles)) {
+            if((x<=max_tiles) && (y <= max_tiles) && (x>=0) && (y >= 0)) {
                 this.DownloadFile(x, y, serv);
            }
         }
         //   a = new BufferedImage(256, 256, 0);
-       if((x<=max_tiles) && (y <= max_tiles)) {
+        if((x<=max_tiles) && (y <= max_tiles) && (x>=0) && (y >= 0)) {
             this.DownloadFile(x, y, serv);
        }
         //   Graphics g = a.getGraphics();
