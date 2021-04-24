@@ -430,7 +430,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                     //      g.drawImage(test,500,500,null);
                     gx.drawImage(buff, 0, 0, null);
                 } else {
-                    g.drawImage(opened.img_full.get(opnimg), 100,100,null);
+                    g.drawImage(opened.img_full.get(opnimg), 250,400,null);
                gx.drawImage(buff,0,0,null);
                 }}
             } else {
