@@ -19,6 +19,9 @@ import static java.lang.Math.PI;
 import static java.lang.Math.random;
 
 public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMotionListener, MouseWheelListener, MouseListener {
+    Boolean openimg = false;
+    int opnimg = 0;
+    ArrayList<Polygon> openi = new ArrayList<>();
     Boolean needDownload = true;
     Font Title = new Font("title", Font.ITALIC, 25);
     Font Desc = new Font("desc", Font.BOLD, 17);
@@ -392,7 +395,7 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                     }
                     gx.drawImage(buff, 0, 0, null);
 
-                } else {//if(!opened.isDraw) {
+                } else {if(!openimg) {
 
                     g.setFont(Title);
                     int count = 70;
@@ -401,6 +404,12 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                     count += 30;
                     int ph_i = 0;
                     for (int i = 0; i < opened.img.size(); i++) {
+                        Polygon w = new Polygon();
+                        w.addPoint(otstup + ph_i * 85, count);
+                        w.addPoint(otstup + ph_i * 85+75,count);
+                        w.addPoint(otstup + ph_i * 85+75, count + 75);
+                        w.addPoint(otstup + ph_i * 85,count + 75);
+                        openi.add(w);
                         g.drawImage(opened.img.get(ph_i), otstup + ph_i * 85, count, 75, 75, null);
                         ph_i++;
                     }
@@ -420,12 +429,16 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                     opened.isDraw = true;
                     //      g.drawImage(test,500,500,null);
                     gx.drawImage(buff, 0, 0, null);
-                }
+                } else {
+                    g.drawImage(opened.img_full.get(opnimg), 100,100,null);
+               gx.drawImage(buff,0,0,null);
+                }}
             } else {
                 Graphics gr = g;
                 gr.setColor(Color.WHITE);
                 gr.fillRect(0,0,9000,9000);
                 gr.setColor(Color.BLACK);
+                gr.setFont(Title);
                 int x= 10;
                 int y = 70;
                 y= help.drstr(gr, x,y,"Назначения клавиш");
@@ -518,7 +531,10 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
         seehelp = false;
         if(!opened.isOpened) {
             try {
+
                 opened = null;
+          //      opened.img_full.clear();
+               // opened.img = new ArrayList<>();
                 opened = choosed;
                 opened.isDraw=false;
                 int id = opened.id;
@@ -529,10 +545,12 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                 opened.ph_time = ans[3].split(split_ph);
                 opened.cat_name = ans[4].split(split_ph);
                 opened.desc_spl = new ArrayList<>();
+                int prv = opened.img.size();
                 for(String v:opened.photos_big_url) {
                     try {
-                        if(v.length()>7) {
+                        if(v.length()>7 && prv < 1) {
                             opened.img.add(ImageIO.read(new URL(v.replaceAll("big", "75")).openStream()));
+                            opened.img_full.add(ImageIO.read(new URL(v).openStream()));
                         }
                     } catch(Exception ex) {
 
@@ -562,7 +580,18 @@ public class map extends JPanel implements KeyEventDispatcher, Runnable, MouseMo
                 System.out.println(ex.toString());
             }
         } else {
-            opened.isOpened = false;
+            boolean b = true;
+            for(int i = 0; i<opened.img_full.size();i++) {
+                if(openi.get(i).contains(e.getX(), e.getY())){
+                    opnimg = i;
+                    openimg = true;
+                    b = false;
+                }
+            }
+            if(b) {
+                openimg = false;
+                opened.isOpened = false;
+            }
         }
     }
 

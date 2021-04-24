@@ -21,8 +21,11 @@ public class mapobject {
     Boolean isOpened = false;
     Boolean isDraw;
     ArrayList<BufferedImage> img= new ArrayList<>();
+    ArrayList<BufferedImage> img_full= new ArrayList<>();
     ArrayList<Integer> category = new ArrayList<Integer>();
  public mapobject(int z, double xz, double yz, int i, ArrayList<Integer> cat, int polygon_s) {
+     img= new ArrayList<>();
+    img_full= new ArrayList<>();
         zoom = z;
         x = xz;
         y = yz;

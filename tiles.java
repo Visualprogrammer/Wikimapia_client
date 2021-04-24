@@ -89,7 +89,7 @@ public class tiles {
 
     public tiles(int zoomExt) {
         zoom = zoomExt;
-        max_tiles = (int) (Math.pow(2, zoom) / 256);
+        max_tiles = (int) (256 << zoom)/256;
         // xNum = new Integer[max];
         //   yNum = new Integer[max];
         //  tileImage = new BufferedImage[max];
@@ -202,14 +202,14 @@ public class tiles {
                 }
             }
         } catch (Exception e) {
-         //   if((x<=max_tiles) && (y <= max_tiles)) {
+            if((x<=max_tiles) && (y <= max_tiles)) {
                 this.DownloadFile(x, y, serv);
-         //   }
+           }
         }
         //   a = new BufferedImage(256, 256, 0);
-      //  if((x<=max_tiles) && (y <= max_tiles)) {
+       if((x<=max_tiles) && (y <= max_tiles)) {
             this.DownloadFile(x, y, serv);
-       // }
+       }
         //   Graphics g = a.getGraphics();
         //  g.setColor(new java.awt.Color(180, 170, 170));
         //  g.fillRect(0, 0, 256, 256);
